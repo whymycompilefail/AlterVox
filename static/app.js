@@ -1,6 +1,8 @@
-/* AlterVox V1 前端：麦克风开关 + 能量 VAD 自动断句。
+/* AlterVox V2 前端：麦克风开关 + 能量 VAD 断句（自适应噪声底）。
    打开麦克风后持续侦听：检测到说话开始，静音 0.8s 判定说完，
-   自动把这一段送管线（ASR→TTS），返回的音频在页面内播放。
+   自动把这一段送管线（VAD→ASR→润色→TTS），返回的音频在页面内播放。
+   本端能量 VAD 只负责断句；键盘声/音乐是否算"人声"由服务端 Silero VAD
+   裁决（Open-LLM-VTuber 同款方案），噪声段会被整体丢弃不进 ASR。
    播放期间门控麦克风（丢弃采样），防止合成声音被自己再录回去形成回环。 */
 
 const ptt = document.getElementById("ptt");
@@ -14,12 +16,15 @@ const sendText = document.getElementById("sendText");
 
 const TARGET_SR = 16000;
 
-// ---- VAD 参数（能量法，配合浏览器 AGC 使用）----
-const VAD_START_RMS = 0.013;   // 超过视为开始说话
-const VAD_END_SILENCE_MS = 800; // 静音多久判定说完
-const VAD_MIN_SPEECH_MS = 250;  // 短于这个时长的“语音”视为噪声，丢弃
-const VAD_MAX_UTT_MS = 25000;   // 单句上限，防跑飞
-const VAD_HANGOVER_MS = 300;    // 播放结束后再门控这么久
+// ---- VAD 参数（能量法断句，阈值随环境噪声自适应；人声裁决在服务端）----
+const VAD_START_RMS = 0.013;       // 静音环境下的起始阈值
+const VAD_START_RMS_MAX = 0.12;    // 动态阈值封顶，太吵时也不能完全失聪
+const VAD_NOISE_FLOOR_FACTOR = 2.5; // 动态阈值 = 背景噪声底 × 此倍数
+const VAD_END_SILENCE_MS = 800;    // 静音多久判定说完
+const VAD_MIN_SPEECH_MS = 250;     // 短于这个时长的"语音"视为噪声，丢弃
+const VAD_MAX_UTT_MS = 25000;      // 单句上限，防跑飞（服务端另有 30s 硬上限）
+const MAX_PENDING = 5;             // 排队上限：噪声连环触发时会堆几十条排队，满 5 条直接丢弃
+const VAD_HANGOVER_MS = 300;       // 播放结束后再门控这么久
 
 let ws = null;
 let micOpen = false;      // 麦克风总开关
@@ -34,6 +39,7 @@ let inSpeech = false;
 let speechBuf = [];       // 当前这句话的采样
 let speechSamples = 0;
 let silenceMs = 0;
+let noiseFloor = 0.004;   // 背景噪声底（EMA），开麦后持续跟踪
 
 let pendingCount = 0;     // 已发送、尚未播放完的句子数
 let lastAudioUrl = null;
@@ -161,6 +167,12 @@ function rmsOf(f32) {
   return Math.sqrt(sum / f32.length);
 }
 
+function startThreshold() {
+  // 静音环境贴 0.013；有音乐/风扇底噪时自动抬高，封顶 0.12
+  return Math.min(VAD_START_RMS_MAX,
+    Math.max(VAD_START_RMS, noiseFloor * VAD_NOISE_FLOOR_FACTOR));
+}
+
 function onAudioFrame(f32) {
   if (!micOpen) return;
 
@@ -170,9 +182,12 @@ function onAudioFrame(f32) {
   if (gated) return; // 播放期间丢弃，防止回环
 
   const frameMs = (f32.length / audioCtx.sampleRate) * 1000;
+  const th = startThreshold();
 
   if (!inSpeech) {
-    if (rms > VAD_START_RMS) {
+    // 只在非说话期跟踪噪声底（说话的 RMS 不算环境噪声）
+    noiseFloor += (rms - noiseFloor) * 0.03;
+    if (rms > th) {
       inSpeech = true;
       silenceMs = 0;
       speechBuf = [new Float32Array(f32)];
@@ -185,7 +200,7 @@ function onAudioFrame(f32) {
   speechBuf.push(new Float32Array(f32));
   speechSamples += f32.length;
 
-  if (rms < VAD_START_RMS) {
+  if (rms < th) {
     silenceMs += frameMs;
     if (silenceMs >= VAD_END_SILENCE_MS) {
       finishUtterance();
@@ -208,6 +223,11 @@ function finishUtterance() {
   silenceMs = 0;
 
   if (durMs < VAD_MIN_SPEECH_MS) return; // 太短，视为噪声
+
+  if (pendingCount >= MAX_PENDING) {
+    setStatus(`排队已满（${MAX_PENDING} 条），这段录音已丢弃`, "busy");
+    return;
+  }
 
   const total = buf.reduce((n, c) => n + c.length, 0);
   const merged = new Float32Array(total);

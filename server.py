@@ -1,8 +1,11 @@
-"""AlterVox V1 服务：本地后端 + Web UI。
+"""AlterVox V2 服务：本地后端 + Web UI。
 
-链路（SPEC.md 5.0 节）：
-    浏览器麦克风 →(WS, 16k PCM)→ ASR(SenseVoice) → 文字 → TTS(Qwen3-TTS) →(WS, wav)→ 页面内播放
+链路（SPEC.md 5.0+ 定稿）：
+    浏览器麦克风 →(WS, 16k PCM)→ ASR(SenseVoice)
+      → 情绪感知(emotion2vec_plus_large) → 纠错润色(Omni-3B 文本通道)
+      → 规则词表兜底 → TTS(Qwen3-TTS) →(WS, wav)→ 页面内播放
 
+情绪的接口是文本本身：润色层按情绪分布改台词（语气词/标点），TTS 照文本演出。
 防漏音设计：麦克风只进管线；直播软件抓浏览器源仅取网页播放的合成音频。
 """
 
@@ -20,23 +23,45 @@ from fastapi.staticfiles import StaticFiles
 
 import config
 from pipeline import Qwen3TTS, SenseVoiceASR
+from pipeline.emotion import EmotionRecognizer
+from pipeline.rewriter import OmniRewriter
+from pipeline.corrector import correct
+from pipeline.vad import VoiceFilter
 
 STATIC_DIR = Path(__file__).parent / "static"
 
 asr: SenseVoiceASR | None = None
 tts: Qwen3TTS | None = None
+emotion: EmotionRecognizer | None = None
+rewriter: OmniRewriter | None = None
+vad: VoiceFilter | None = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global asr, tts
+    global asr, tts, emotion, rewriter, vad
     print("[startup] loading ASR (SenseVoice int8)...")
     asr = SenseVoiceASR()
     print("[startup] loading TTS (Qwen3-TTS resident engine, warmup in background)...")
     tts = Qwen3TTS()
+    print("[startup] loading Silero VAD (voice filter)...")
+    try:
+        vad = VoiceFilter()
+    except Exception as e:
+        print(f"[startup] VAD 不可用，不过滤直接进 ASR: {e}")
+    print("[startup] loading emotion (emotion2vec_plus_large)...")
+    try:
+        emotion = EmotionRecognizer()
+    except Exception as e:
+        print(f"[startup] emotion 不可用，降级为 V1: {e}")
+    print("[startup] spawning Omni-3B text channel (llama-server, ready in bg)...")
+    try:
+        rewriter = OmniRewriter()
+    except Exception as e:
+        print(f"[startup] rewriter 不可用，降级为 V1: {e}")
     print(f"[startup] ready: http://{config.HOST}:{config.PORT}")
     yield
-    # atexit 已负责杀 llama-tts 常驻进程
+    # atexit 已负责杀 llama-tts / llama-server 常驻进程
 
 
 app = FastAPI(lifespan=lifespan)
@@ -71,20 +96,43 @@ async def ws_pipeline(ws: WebSocket):
                 if audio.size < int(0.2 * config.ASR_SAMPLE_RATE):
                     await ws.send_json({"type": "error", "message": "录音太短"})
                     continue
+                # 服务端上限：客户端 25s 断句之上再兜一道，防异常超长录音拖垮管线
+                if audio.size > int(30 * config.ASR_SAMPLE_RATE):
+                    audio = audio[:int(30 * config.ASR_SAMPLE_RATE)]
+
+                # Silero VAD 人声过滤：键盘声/音乐/环境噪声在这里被整体剔除
+                if vad is not None:
+                    speech = await asyncio.to_thread(vad.speech_only, audio)
+                    speech_s = len(speech) / config.ASR_SAMPLE_RATE
+                    if speech_s < 0.3:
+                        await ws.send_json({
+                            "type": "error",
+                            "message": "未检测到人声，已忽略（噪声过滤）",
+                        })
+                        print(f"[vad] 人声 {speech_s:.2f}s < 0.3s，丢弃")
+                        continue
+                    print(f"[vad] 人声 {speech_s:.2f}s / 原始 {len(audio)/config.ASR_SAMPLE_RATE:.2f}s")
+                    audio = speech
 
                 t0 = time.perf_counter()
                 text = await asyncio.to_thread(asr.transcribe, audio)
                 t_asr = time.perf_counter() - t0
-                await ws.send_json({"type": "asr", "text": text, "asr_s": round(t_asr, 2)})
                 print(f"[asr {t_asr:.2f}s] {text}")
 
                 if not text.strip():
+                    await ws.send_json({"type": "asr", "text": text, "asr_s": round(t_asr, 2)})
                     continue
+
+                final_text, v2 = await asyncio.to_thread(_v2_polish, audio, text)
+                await ws.send_json({"type": "asr", "text": text, "asr_s": round(t_asr, 2),
+                                    "polished": final_text, **v2})
+                print(f"[emo] {v2.get('emotion', '-')}  ->  [polish] {final_text}")
+
                 try:
-                    wav_path, t_tts, wav_bytes = await asyncio.to_thread(_synth, text)
+                    wav_path, t_tts, wav_bytes = await asyncio.to_thread(_synth, final_text)
                     await ws.send_json({
                         "type": "audio",
-                        "text": text,
+                        "text": final_text,
                         "tts_s": round(t_tts, 2),
                         "wav_b64": base64.b64encode(wav_bytes).decode("ascii"),
                     })
@@ -110,6 +158,42 @@ async def ws_pipeline(ws: WebSocket):
 
     except WebSocketDisconnect:
         print("[ws] client disconnected")
+
+
+def _v2_polish(audio, text):
+    """V2 三段：情绪感知 → Omni 纠错润色 → 规则兜底。返回 (最终台词, 元信息)。
+
+    每段独立降级：情绪失败→按中立喂给润色层；润色失败→用原始转写；
+    规则兜底永远跑（对润色输出与原始转写都做确定性审计）。
+    """
+    info = {}
+
+    # 1) 情绪感知（emotion2vec 分布，标签取中文半截）
+    evidence = ""
+    if emotion is not None:
+        try:
+            top, emo_s = emotion.recognize(audio, config.ASR_SAMPLE_RATE)
+            evidence = " ".join(f"{p['label']}({p['score']})" for p in top)
+            info["emotion"] = evidence
+            info["emo_s"] = round(emo_s, 2)
+        except Exception as e:
+            print(f"[emo] 失败（按中立处理）: {e}")
+
+    # 2) Omni-3B 文本通道纠错润色
+    polished = text
+    if rewriter is not None:
+        try:
+            polished, llm_s = rewriter.rewrite(text, evidence)
+            info["rewrite_s"] = round(llm_s, 2)
+        except Exception as e:
+            print(f"[omni] 润色失败（用原始转写）: {e}")
+            polished = text
+
+    # 3) 规则词表兜底（确定性替换，edits 可审计）
+    fixed, edits = correct(polished)
+    if edits:
+        info["edits"] = [list(e) for e in edits]
+    return fixed.strip() or polished.strip(), info
 
 
 def _synth(text: str) -> tuple[str, float, bytes]:

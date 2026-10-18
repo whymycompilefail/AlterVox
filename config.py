@@ -66,6 +66,25 @@ TTS_SEED = 2
 TTS_MAX_NEW_TOKENS = 96  # 8s 音频上限，防止跑飞
 TTS_TMP_DIR = str(ROOT / "cache" / "tts")
 
+# ---------------------------------------------------------------- V2 情绪层
+EMOTION_MODEL_DIR = _first(    # emotion2vec_plus_large（funasr 格式，~2GB）
+    os.environ.get("ALTERVOX_EMOTION_DIR"),
+    ROOT / "emotion2vec_plus_large",
+)
+LLAMA_SERVER_BIN = _first(     # Omni-3B 常驻服务用（与 llama-tts 同一构建）
+    os.environ.get("ALTERVOX_LLAMA_SERVER"),
+    ROOT / "llama.cpp" / "build" / "bin" / "llama-server.exe",
+    ASSETS / "llama.cpp" / "build" / "bin" / "llama-server.exe",
+)
+OMNI_DIR = Path(os.environ.get("ALTERVOX_OMNI_DIR", ROOT / "Qwen2.5-Omni-3B-GGUF"))
+OMNI_MODEL = os.environ.get(
+    "ALTERVOX_OMNI_MODEL", str(OMNI_DIR / "Qwen2.5-Omni-3B-Q4_K_M.gguf"))
+OMNI_MMPROJ = os.environ.get(
+    "ALTERVOX_OMNI_MMPROJ", str(OMNI_DIR / "mmproj-F16.gguf"))
+OMNI_HOST = "127.0.0.1"
+OMNI_PORT = int(os.environ.get("ALTERVOX_OMNI_PORT", "8081"))
+OMNI_THREADS = 12
+
 # ---------------------------------------------------------------- 服务
 HOST = "127.0.0.1"
 PORT = int(os.environ.get("ALTERVOX_PORT", "8765"))

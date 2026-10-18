@@ -5,7 +5,8 @@ numpy
 sherpa-onnx
 soundfile
 librosa
-
-# 训练 / 选声额外依赖（建议独立 venv，见 README「声线制作」一节）：
-#   torch (CPU)  transformers  peft  qwen-tts  safetensors
-#   情绪感知（V2）：funasr (emotion2vec_plus_large)
+pypinyin
+psutil
+# 情绪感知（V2）：CPU 版 torch + funasr
+#   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+funasr
