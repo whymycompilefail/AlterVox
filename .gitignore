@@ -1,0 +1,43 @@
+# ---- 隐私与本机痕迹（永远最先写）----
+.workbuddy/
+.trae/
+*.log
+__pycache__/
+*.pyc
+.venv/
+.venv-*/
+
+# ---- CV 语音数据与衍生品（本仓最高危类别）----
+# 录音切片+转写=表演者劳动成果；合并模型/LoRA/GGUF=衍生品。全部永不发布。
+voices/
+cute_girl.wav
+cute_girl.mp4
+# 根目录任意媒体文件（源录音/测试录音一律不入仓）
+/*.mp4
+/*.wav
+/*.flac
+/*.m4a
+
+# ---- 第三方权重（既定边界：仅源码，权重一律不发）----
+emotion2vec_plus_large/
+emotion2vec_base_finetuned/
+Qwen2.5-Omni-3B-GGUF/
+cache/
+**/*.gguf
+**/*.onnx
+**/*.safetensors
+**/*.bin
+
+# ---- llama.cpp fork：收编源码，排除三件套 ----
+# build/ 含 CMakeCache（Windows 用户名）与 compile_commands.json（本机绝对路径）；
+# models/ 是上游测试 vocab（.gguf）；.git.fork-backup/ 是停放的上游历史。
+llama.cpp/build/
+llama.cpp/build*/
+llama.cpp/out/
+llama.cpp/models/
+llama.cpp/.git.fork-backup/
+
+# ---- 运行产物与评测存档 ----
+# v2_poc = 模型选型 bake-off 的测试环境（测试集/实验脚本/报告），只用于决定"用哪个模型"，
+# 与项目本体无关，结论已沉淀进 SPEC.md——本地存档，不入仓。
+v2_poc/

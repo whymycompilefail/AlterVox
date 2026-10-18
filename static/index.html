@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlterVox · 腹语</title>
+<style>
+  /* ================================================================
+     AlterVox · 极简工作台
+     近黑 / 无卡片 / 单一 accent / 居中波形签名
+     ================================================================ */
+  :root {
+    --bg: #0e0f12;
+    --text: #ececee;
+    --dim: #8a8f98;
+    --faint: #565b64;
+    --line: rgba(255,255,255,.07);
+    --accent: #5eead4;          /* 唯一强调色 */
+    --accent-dim: rgba(94,234,212,.14);
+    --mono: "Cascadia Code", "Consolas", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+  body {
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI Variable Text", "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 24px 64px;
+  }
+
+  /* ---------------- 顶栏 ---------------- */
+  header {
+    width: min(640px, 100%);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0 16px;
+  }
+  .brand {
+    font-size: 15px; font-weight: 600; letter-spacing: .04em;
+  }
+  .brand span { color: var(--dim); font-weight: 400; margin-left: 10px; font-size: 13px; }
+  header .hint {
+    font-size: 12px; color: var(--faint);
+  }
+  header .hint kbd {
+    font-family: var(--mono); font-size: 10px;
+    border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px;
+    color: var(--dim);
+  }
+
+  /* ---------------- 主区：开关 / 波形 / 状态 / 转写 ---------------- */
+  main { width: min(640px, 100%); }
+
+  .stage {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 56px 0 40px;
+    gap: 26px;
+  }
+  #ptt {
+    width: 84px; height: 84px; border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid var(--line);
+    color: var(--dim); cursor: pointer; user-select: none; -webkit-user-select: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    font-family: inherit; font-size: 12px; letter-spacing: .06em;
+    transition: border-color .25s, color .25s, box-shadow .25s, transform .07s;
+    touch-action: none;
+  }
+  #ptt:hover { border-color: var(--dim); color: var(--text); }
+  #ptt:active { transform: scale(.96); }
+  #ptt .lamp {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--faint); opacity: .5;
+    transition: background .2s, opacity .2s, box-shadow .2s;
+  }
+  #ptt .hint { font-size: 10px; color: var(--faint); letter-spacing: .1em; }
+  /* 开机：accent 细环 + 呼吸 */
+  #ptt.on {
+    border-color: var(--accent); color: var(--text);
+    box-shadow: 0 0 0 5px var(--accent-dim);
+  }
+  #ptt.on .lamp {
+    background: var(--accent); opacity: 1;
+    box-shadow: 0 0 8px var(--accent);
+    animation: breathe 2.4s ease-in-out infinite;
+  }
+  @keyframes breathe { 50% { opacity: .45; box-shadow: 0 0 2px var(--accent); } }
+
+  /* 波形：唯一的声音视觉签名，随麦克风实时起伏 */
+  #vu {
+    display: flex; gap: 4px; align-items: center;
+    height: 30px;
+  }
+  #vu i {
+    width: 3px; height: 26px; border-radius: 2px;
+    background: var(--line);
+    transform: scaleY(.1);
+    transition: transform .07s linear, background .12s;
+  }
+  #vu i.on     { background: var(--accent-dim); }
+  #vu i.on.mid { background: var(--accent); opacity: .75; }
+  #vu i.on.hot { background: var(--accent); opacity: 1; }
+
+  #status {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--dim); min-height: 20px;
+    letter-spacing: .02em;
+  }
+  #status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--faint); flex: none;
+    transition: background .2s, box-shadow .2s;
+  }
+  #status.busy .dot {
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: blink 1s ease-in-out infinite;
+  }
+  #status.playing .dot {
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+  }
+  @keyframes blink { 50% { opacity: .25; } }
+
+  /* 转写：无框大字，页面里最响的读出 */
+  #transcript {
+    width: 100%;
+    min-height: 64px;
+    font-size: 19px; line-height: 1.8; word-break: break-all;
+    color: var(--text);
+  }
+  #transcript .placeholder { color: var(--faint); font-size: 14px; }
+
+  /* ---------------- 输入行：下划线式 ---------------- */
+  .row {
+    display: flex; gap: 14px; align-items: center;
+    border-bottom: 1px solid var(--line);
+    padding: 6px 2px 10px;
+    transition: border-color .2s;
+  }
+  .row:focus-within { border-color: var(--dim); }
+  input[type=text] {
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--text); font-size: 14px; font-family: inherit;
+  }
+  input[type=text]::placeholder { color: var(--faint); }
+  button.secondary {
+    background: none; border: none; color: var(--dim);
+    font-size: 13px; font-family: inherit; letter-spacing: .1em;
+    cursor: pointer; flex: none; padding: 4px 2px;
+    transition: color .15s;
+  }
+  button.secondary:hover { color: var(--accent); }
+  button.secondary:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* ---------------- 历史：分割线列表，无卡片 ---------------- */
+  .history { margin-top: 44px; }
+  .history .head {
+    font-size: 11px; color: var(--faint); letter-spacing: .22em;
+    margin-bottom: 4px;
+  }
+  #log { display: flex; flex-direction: column; max-height: 280px; overflow-y: auto; }
+  .entry {
+    display: flex; align-items: baseline; gap: 14px;
+    padding: 12px 2px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+    animation: fadein .3s ease both;
+  }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } }
+  .entry .txt { flex: 1; word-break: break-all; min-width: 0; }
+  .entry .meta {
+    font-family: var(--mono); font-size: 11px; color: var(--faint);
+    white-space: nowrap;
+  }
+  .entry .replay {
+    background: none; border: none; color: var(--faint);
+    font-size: 12px; cursor: pointer; flex: none;
+    transition: color .15s;
+  }
+  .entry .replay:hover { color: var(--accent); }
+
+  /* ---------------- OBS 说明：一行式折叠 ---------------- */
+  details { margin-top: 40px; }
+  details summary {
+    cursor: pointer; outline: none; user-select: none;
+    font-size: 12px; color: var(--faint); letter-spacing: .05em;
+    transition: color .15s; list-style: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before { content: "+ "; color: var(--dim); }
+  details[open] summary::before { content: "− "; }
+  details summary:hover { color: var(--dim); }
+  details ol {
+    margin: 12px 0 0 4px; line-height: 2.1;
+    font-size: 13px; color: var(--dim);
+  }
+  details strong { color: var(--text); font-weight: 500; }
+  details code {
+    font-family: var(--mono); font-size: 12px; color: var(--dim);
+  }
+
+  footer {
+    width: min(640px, 100%);
+    margin-top: 56px; padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 10px;
+    color: var(--faint); letter-spacing: .12em;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">AlterVox<span>腹语</span></div>
+    <div class="hint"><kbd>Space</kbd> 开关麦克风</div>
+  </header>
+
+  <main>
+    <div class="stage">
+      <button id="ptt">
+        <span class="lamp"></span>
+        <span id="pttLabel">麦克风</span>
+        <span class="hint">点击开关</span>
+      </button>
+
+      <div id="vu"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+      <div id="status"><span class="dot"></span>麦克风已关闭</div>
+
+      <div id="transcript"><span class="placeholder">打开麦克风说一句话，识别结果会落在这里</span></div>
+    </div>
+
+    <div class="row">
+      <input type="text" id="textInput" placeholder="直接输入文本，让定制声线读">
+      <button class="secondary" id="sendText">合成</button>
+    </div>
+
+    <div class="history">
+      <div class="head">HISTORY</div>
+      <div id="log"></div>
+    </div>
+
+    <details>
+      <summary>直播接入（OBS 防漏音）</summary>
+      <ol>
+        <li>OBS 添加「浏览器」源，地址填本页 <code>http://127.0.0.1:8765</code>。</li>
+        <li>混音器中<strong>不要</strong>添加麦克风设备——麦克风只进本页面。</li>
+        <li>观众只会听到页面里播放的合成声音，你的本音不进直播。</li>
+      </ol>
+    </details>
+  </main>
+
+  <footer>
+    <span>ALTERVOX V1</span>
+    <span>ASR → TTS · SEED 2</span>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
