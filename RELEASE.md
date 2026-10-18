@@ -32,9 +32,13 @@ __pycache__/
 
 # ---- CV 语音数据与衍生品（本仓最高危类别）----
 # 录音切片+转写=表演者劳动成果；合并模型/LoRA/GGUF=衍生品。全部永不发布。
+# CV 源录音在仓库根目录，由下面这组媒体规则兜底；
+# 不在本文件写具体源文件名——ignore 文件是公开的。
 voices/
-cute_girl.wav
-cute_girl.mp4
+/*.mp4
+/*.wav
+/*.flac
+/*.m4a
 
 # ---- 第三方权重（既定边界：仅源码，权重一律不发）----
 emotion2vec_plus_large/
