@@ -7,6 +7,7 @@
 #include "mtmd-helper.h"
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <iostream>
@@ -97,6 +98,8 @@ int main(int argc, char ** argv) {
     llama_model    * model = llama_init->model();
     llama_context  * lctx  = llama_init->context();
     common_sampler * smpl  = llama_init->sampler(0);
+    // samplers created by "@seed=" are owned here; the initial one belongs to llama_init
+    bool smpl_owned = false;
     if (!model || !lctx) {
         LOG_ERR("failed to init model/context\n");
         return 1;
@@ -157,6 +160,46 @@ int main(int argc, char ** argv) {
             }
             if (!text.empty() && text.back() == '\r') {
                 text.pop_back();
+            }
+            // control line: "@spk=<path>" swaps the speaker reference for the
+            // following prompts; "@spk=" alone clears it. The helper re-encodes
+            // the reference on every iteration, so a swap costs no more than a
+            // normal prompt and needs no cache invalidation beyond that.
+            if (text.rfind("@spk=", 0) == 0) {
+                std::string path = text.substr(5);
+                if (path.empty()) {
+                    speaker_bitmap.reset();
+                    LOG_INF("[tts] speaker reference cleared\n");
+                } else {
+                    auto wrapper = mtmd_helper_bitmap_init_from_file(mctx.get(), path.c_str(), false, mtmd_helper_init_opt_default());
+                    if (!wrapper.bitmap) {
+                        LOG_ERR("[tts] speaker switch failed %s\n", path.c_str());
+                    } else {
+                        speaker_bitmap.reset(wrapper.bitmap);
+                        LOG_INF("[tts] speaker reference -> %s\n", path.c_str());
+                    }
+                }
+                fflush(stdout);
+                fflush(stderr);
+                continue;
+            }
+            // control line: "@seed=<n>" reseeds the backbone sampler and the
+            // audio-code RNG for the following prompts. A fixed seed makes a
+            // resident process fully deterministic, so a prompt that falls into
+            // a degenerate trajectory (seconds of silence, then the token cap)
+            // will fail the same way forever; retrying with a new seed gives a
+            // genuinely independent sampling trajectory.
+            if (text.rfind("@seed=", 0) == 0) {
+                params.sampling.seed = (uint32_t) std::strtoul(text.c_str() + 6, nullptr, 10);
+                if (smpl_owned) {
+                    common_sampler_free(smpl);
+                }
+                smpl = common_sampler_init(model, params.sampling);
+                smpl_owned = true;
+                LOG_INF("[tts] seed -> %u\n", params.sampling.seed);
+                fflush(stdout);
+                fflush(stderr);
+                continue;
             }
             if (text.empty()) {
                 continue;
@@ -279,6 +322,10 @@ int main(int argc, char ** argv) {
         fflush(stdout);
         fflush(stderr);
         iter++;
+    }
+
+    if (smpl_owned) {
+        common_sampler_free(smpl);
     }
 
     llama_backend_free();
