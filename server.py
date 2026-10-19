@@ -5,7 +5,11 @@
       → 情绪感知(emotion2vec_plus_large) → 纠错润色(Omni-3B 文本通道)
       → 规则词表兜底 → TTS(Qwen3-TTS) →(WS, wav)→ 页面内播放
 
-情绪的接口是文本本身：润色层按情绪分布改台词（语气词/标点），TTS 照文本演出。
+情绪有两层接口：润色层按情绪分布改台词（语气词/标点）；TTS 层按 emo_top
+通过 @spk= 切换到该情绪参考音频（voices/emotion_bank/manifest.json），
+参考音频的逐帧声学 token 直接参与条件生成，情绪落在音色和韵律上。
+合规轨（默认）用 VoiceDesign 批量产出的原创声线；SFT 定制轨不挂参考
+（身份先验会压过参考韵律），EMOTION_REFS 为空。
 防漏音设计：麦克风只进管线；直播软件抓浏览器源仅取网页播放的合成音频。
 """
 
@@ -129,14 +133,17 @@ async def ws_pipeline(ws: WebSocket):
                 print(f"[emo] {v2.get('emotion', '-')}  ->  [polish] {final_text}")
 
                 try:
-                    wav_path, t_tts, wav_bytes = await asyncio.to_thread(_synth, final_text)
+                    wav_path, t_tts, wav_bytes = await asyncio.to_thread(
+                        _synth, final_text, v2.get("emo_top"))
                     await ws.send_json({
                         "type": "audio",
                         "text": final_text,
+                        "emo_ref": v2.get("emo_top", "默认"),
                         "tts_s": round(t_tts, 2),
                         "wav_b64": base64.b64encode(wav_bytes).decode("ascii"),
                     })
-                    print(f"[tts {t_tts:.2f}s] -> {len(wav_bytes)} bytes")
+                    print(f"[tts {t_tts:.2f}s] ref={v2.get('emo_top', '默认')} "
+                          f"-> {len(wav_bytes)} bytes")
                 except Exception as e:
                     await ws.send_json({"type": "error", "message": f"TTS 失败: {e}"})
 
@@ -176,6 +183,15 @@ def _v2_polish(audio, text):
             evidence = " ".join(f"{p['label']}({p['score']})" for p in top)
             info["emotion"] = evidence
             info["emo_s"] = round(emo_s, 2)
+            # 只在有参考音频的标签里取最高分：top-1 常是「恐惧/吃惊」这类
+            # 没有参考的邻居类，会把本该走「难过」的样本拦掉。
+            candidates = [(p["score"], p["label"]) for p in top
+                          if p["label"] in config.EMOTION_REFS]
+            if candidates:
+                score, label = max(candidates)
+                if score >= config.EMOTION_REF_MIN_SCORE:
+                    info["emo_top"] = label
+                    info["emo_top_score"] = round(score, 3)
         except Exception as e:
             print(f"[emo] 失败（按中立处理）: {e}")
 
@@ -196,10 +212,11 @@ def _v2_polish(audio, text):
     return fixed.strip() or polished.strip(), info
 
 
-def _synth(text: str) -> tuple[str, float, bytes]:
-    """合成并读出 wav 字节（阻塞，跑在线程池里）。"""
+def _synth(text: str, emo: str | None = None) -> tuple[str, float, bytes]:
+    """合成并读出 wav 字节（阻塞，跑在线程池里）。emo 决定用哪条情绪参考。"""
     t0 = time.perf_counter()
-    path = tts.synth_to_file(text)
+    ref = config.EMOTION_REFS.get(emo) if emo else None
+    path = tts.synth_to_file(text, speaker_file=ref)
     t_tts = time.perf_counter() - t0
     data = Path(path).read_bytes()
     tts.synth_cleanup(path)

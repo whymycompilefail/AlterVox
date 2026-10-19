@@ -1,0 +1,2547 @@
+{
+  "version": 2,
+  "created": "2026-10-19 23:47:44",
+  "profile": "compliant",
+  "voice_description": "固定角色声线，五段情绪必须是同一个人：二十岁出头的成年少女，稚气未脱但已成年；音色偏薄、偏亮，基频偏高但不尖锐；口腔共鸣小、声音靠前，带一点轻鼻音；咬字清晰干脆，字尾收得短，不拖尾音；语气清冷寡淡，不撒娇、不嗲、不甜腻；音域固定在这位角色的自然音区，整段只能用这一个人的声音。",
+  "ref_text": {
+    "neutral": "你回来啦，我等你好一会儿了。",
+    "happy": "谢谢你！这个礼物我很喜欢。",
+    "sad": "唉……你走了以后，我就只剩下一个人了。",
+    "angry": "你这个人怎么这样！",
+    "surprise": "真的吗？这也太神奇了吧！"
+  },
+  "backbone": "Qwen3-TTS-0.6B-q8_0.gguf",
+  "screen_text": [
+    "你回来啦，我等你好一会儿了。",
+    "今天外面下了点雨，路上有点堵。"
+  ],
+  "scene_text": {
+    "neutral": "你回来啦，我等你好一会儿了。",
+    "happy": "谢谢你！这个礼物我很喜欢。",
+    "sad": "唉……你走了以后，我就只剩下一个人了。",
+    "angry": "你这个人怎么这样！",
+    "surprise": "真的吗？这也太神奇了吧！"
+  },
+  "thresholds": {
+    "min_emo_score": 0.45,
+    "min_scene_floor": 0.3,
+    "scene_takes": 3,
+    "min_id_cos": 0.96,
+    "f0_ratio": [
+      0.8,
+      1.35
+    ],
+    "ref_dur": [
+      1.2,
+      6.0
+    ],
+    "out_dur": [
+      1.0,
+      8.0
+    ],
+    "signature": {
+      "happy": "f0_med>=1.08 且 f0_std>=1.20",
+      "sad": "f0_med<=0.88 且 f0_std<=0.88",
+      "angry": "f0_med>=1.08 且 f0_std>=1.15 且 rms>=1.08",
+      "surprise": "f0_std>=1.20 且 f0_med>=1.03"
+    }
+  },
+  "default": {
+    "emotion": "neutral",
+    "file": "selected/neutral.wav",
+    "seed": 9,
+    "score": 0.498
+  },
+  "refs": {
+    "开心": {
+      "file": "selected/happy.wav",
+      "text": "谢谢你！这个礼物我很喜欢。",
+      "seed": 6,
+      "score": 0.65,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        0.589
+      ],
+      "cos": 0.9676,
+      "ref_f0_ratio": 1.084,
+      "mode": "score",
+      "ratios": {
+        "f0_med": 1.07,
+        "f0_std": 1.097,
+        "rms": 0.921
+      },
+      "top": [
+        {
+          "label": "开心",
+          "score": 0.65
+        },
+        {
+          "label": "吃惊",
+          "score": 0.241
+        },
+        {
+          "label": "中立",
+          "score": 0.079
+        },
+        {
+          "label": "生气",
+          "score": 0.021
+        },
+        {
+          "label": "难过",
+          "score": 0.006
+        },
+        {
+          "label": "恐惧",
+          "score": 0.003
+        },
+        {
+          "label": "厌恶",
+          "score": 0.0
+        },
+        {
+          "label": "其他",
+          "score": 0.0
+        },
+        {
+          "label": "<unk>",
+          "score": 0.0
+        }
+      ]
+    },
+    "难过": {
+      "file": "selected/sad.wav",
+      "text": "唉……你走了以后，我就只剩下一个人了。",
+      "seed": 1,
+      "score": 0.001,
+      "scene_score": 0.999,
+      "scene_scores": [
+        0.999,
+        0.362,
+        1.0
+      ],
+      "cos": 0.972,
+      "ref_f0_ratio": 0.876,
+      "mode": "score",
+      "ratios": {
+        "f0_med": 1.003,
+        "f0_std": 1.126,
+        "rms": 1.07
+      },
+      "top": [
+        {
+          "label": "吃惊",
+          "score": 0.651
+        },
+        {
+          "label": "中立",
+          "score": 0.328
+        },
+        {
+          "label": "开心",
+          "score": 0.016
+        },
+        {
+          "label": "恐惧",
+          "score": 0.004
+        },
+        {
+          "label": "难过",
+          "score": 0.001
+        },
+        {
+          "label": "生气",
+          "score": 0.0
+        },
+        {
+          "label": "厌恶",
+          "score": 0.0
+        },
+        {
+          "label": "<unk>",
+          "score": 0.0
+        },
+        {
+          "label": "其他",
+          "score": 0.0
+        }
+      ]
+    },
+    "生气": {
+      "file": "selected/angry.wav",
+      "text": "你这个人怎么这样！",
+      "seed": 2,
+      "score": 0.0,
+      "scene_score": 0.996,
+      "scene_scores": [
+        0.0,
+        0.996,
+        0.998
+      ],
+      "cos": 0.9642,
+      "ref_f0_ratio": 1.309,
+      "mode": "score",
+      "ratios": {
+        "f0_med": 1.408,
+        "f0_std": 1.892,
+        "rms": 1.198
+      },
+      "top": [
+        {
+          "label": "吃惊",
+          "score": 1.0
+        },
+        {
+          "label": "开心",
+          "score": 0.0
+        },
+        {
+          "label": "生气",
+          "score": 0.0
+        },
+        {
+          "label": "难过",
+          "score": 0.0
+        },
+        {
+          "label": "中立",
+          "score": 0.0
+        },
+        {
+          "label": "恐惧",
+          "score": 0.0
+        },
+        {
+          "label": "厌恶",
+          "score": 0.0
+        },
+        {
+          "label": "<unk>",
+          "score": 0.0
+        },
+        {
+          "label": "其他",
+          "score": 0.0
+        }
+      ]
+    },
+    "吃惊": {
+      "file": "selected/surprise.wav",
+      "text": "真的吗？这也太神奇了吧！",
+      "seed": 4,
+      "score": 0.492,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "cos": 0.9741,
+      "ref_f0_ratio": 1.32,
+      "mode": "score",
+      "ratios": {
+        "f0_med": 1.046,
+        "f0_std": 1.253,
+        "rms": 1.111
+      },
+      "top": [
+        {
+          "label": "开心",
+          "score": 0.503
+        },
+        {
+          "label": "吃惊",
+          "score": 0.492
+        },
+        {
+          "label": "中立",
+          "score": 0.004
+        },
+        {
+          "label": "生气",
+          "score": 0.001
+        },
+        {
+          "label": "难过",
+          "score": 0.001
+        },
+        {
+          "label": "恐惧",
+          "score": 0.0
+        },
+        {
+          "label": "厌恶",
+          "score": 0.0
+        },
+        {
+          "label": "其他",
+          "score": 0.0
+        },
+        {
+          "label": "<unk>",
+          "score": 0.0
+        }
+      ]
+    }
+  },
+  "rejected": {},
+  "candidates": [
+    {
+      "emotion": "neutral",
+      "seed": 1,
+      "ref": "neutral_s1.wav",
+      "ref_stats": {
+        "dur": 2.06,
+        "f0_med": 245.6,
+        "f0_std": 42.0,
+        "rms": 0.1236
+      },
+      "out_stats": [
+        {
+          "dur": 3.2,
+          "f0_med": 290.4,
+          "f0_std": 43.0,
+          "rms": 0.0885
+        },
+        {
+          "dur": 2.96,
+          "f0_med": 242.8,
+          "f0_std": 45.4,
+          "rms": 0.1106
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.5,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9886,
+      "ref_f0_ratio": 0.891,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 2,
+      "ref": "neutral_s2.wav",
+      "ref_stats": {
+        "dur": 1.94,
+        "f0_med": 234.5,
+        "f0_std": 34.0,
+        "rms": 0.1226
+      },
+      "out_stats": [
+        {
+          "dur": 2.32,
+          "f0_med": 247.0,
+          "f0_std": 41.9,
+          "rms": 0.0882
+        },
+        {
+          "dur": 2.48,
+          "f0_med": 266.3,
+          "f0_std": 58.9,
+          "rms": 0.0985
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.982,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.98,
+      "ref_f0_ratio": 0.851,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 3,
+      "ref": "neutral_s3.wav",
+      "ref_stats": {
+        "dur": 2.17,
+        "f0_med": 254.3,
+        "f0_std": 43.2,
+        "rms": 0.1561
+      },
+      "out_stats": [
+        {
+          "dur": 3.28,
+          "f0_med": 253.5,
+          "f0_std": 42.2,
+          "rms": 0.1205
+        },
+        {
+          "dur": 2.88,
+          "f0_med": 221.4,
+          "f0_std": 46.6,
+          "rms": 0.1469
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.5,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9802,
+      "ref_f0_ratio": 0.922,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 4,
+      "ref": "neutral_s4.wav",
+      "ref_stats": {
+        "dur": 1.88,
+        "f0_med": 326.0,
+        "f0_std": 41.1,
+        "rms": 0.1148
+      },
+      "out_stats": [
+        {
+          "dur": 2.88,
+          "f0_med": 298.9,
+          "f0_std": 45.0,
+          "rms": 0.0743
+        },
+        {
+          "dur": 2.56,
+          "f0_med": 271.0,
+          "f0_std": 45.4,
+          "rms": 0.0863
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.233,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9715,
+      "ref_f0_ratio": 1.182,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 5,
+      "ref": "neutral_s5.wav",
+      "ref_stats": {
+        "dur": 1.97,
+        "f0_med": 330.7,
+        "f0_std": 62.5,
+        "rms": 0.102
+      },
+      "out_stats": [
+        {
+          "dur": 2.48,
+          "f0_med": 282.1,
+          "f0_std": 59.9,
+          "rms": 0.0715
+        },
+        {
+          "dur": 2.8,
+          "f0_med": 331.7,
+          "f0_std": 81.0,
+          "rms": 0.0682
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.003,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9793,
+      "ref_f0_ratio": 1.199,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 6,
+      "ref": "neutral_s6.wav",
+      "ref_stats": {
+        "dur": 1.93,
+        "f0_med": 242.8,
+        "f0_std": 36.5,
+        "rms": 0.15
+      },
+      "out_stats": [
+        {
+          "dur": 2.64,
+          "f0_med": 233.8,
+          "f0_std": 42.4,
+          "rms": 0.122
+        },
+        {
+          "dur": 2.64,
+          "f0_med": 227.2,
+          "f0_std": 37.3,
+          "rms": 0.1364
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.97,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.986,
+      "ref_f0_ratio": 0.881,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 7,
+      "ref": "neutral_s7.wav",
+      "ref_stats": {
+        "dur": 1.96,
+        "f0_med": 296.3,
+        "f0_std": 59.6,
+        "rms": 0.1234
+      },
+      "out_stats": [
+        {
+          "dur": 2.96,
+          "f0_med": 332.6,
+          "f0_std": 62.7,
+          "rms": 0.0772
+        },
+        {
+          "dur": 2.88,
+          "f0_med": 305.9,
+          "f0_std": 50.8,
+          "rms": 0.0977
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.461,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9854,
+      "ref_f0_ratio": 1.075,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 8,
+      "ref": "neutral_s8.wav",
+      "ref_stats": {
+        "dur": 1.76,
+        "f0_med": 268.6,
+        "f0_std": 61.3,
+        "rms": 0.1317
+      },
+      "out_stats": [
+        {
+          "dur": 3.12,
+          "f0_med": 275.7,
+          "f0_std": 55.8,
+          "rms": 0.0945
+        },
+        {
+          "dur": 2.72,
+          "f0_med": 266.3,
+          "f0_std": 55.7,
+          "rms": 0.1354
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.898,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9872,
+      "ref_f0_ratio": 0.974,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 9,
+      "ref": "neutral_s9.wav",
+      "ref_stats": {
+        "dur": 1.79,
+        "f0_med": 275.7,
+        "f0_std": 43.4,
+        "rms": 0.1167
+      },
+      "out_stats": [
+        {
+          "dur": 2.8,
+          "f0_med": 264.8,
+          "f0_std": 49.6,
+          "rms": 0.0941
+        },
+        {
+          "dur": 2.48,
+          "f0_med": 276.5,
+          "f0_std": 53.8,
+          "rms": 0.086
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.498,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 1.0,
+      "ref_f0_ratio": 1.0,
+      "ratios": null,
+      "signature": null,
+      "verdict": "base",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 10,
+      "ref": "neutral_s10.wav",
+      "ref_stats": {
+        "dur": 2.22,
+        "f0_med": 292.9,
+        "f0_std": 41.8,
+        "rms": 0.1135
+      },
+      "out_stats": [
+        {
+          "dur": 2.32,
+          "f0_med": 295.5,
+          "f0_std": 59.4,
+          "rms": 0.09
+        },
+        {
+          "dur": 2.72,
+          "f0_med": 302.4,
+          "f0_std": 58.3,
+          "rms": 0.0835
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.0,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9763,
+      "ref_f0_ratio": 1.062,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 11,
+      "ref": "neutral_s11.wav",
+      "ref_stats": {
+        "dur": 1.95,
+        "f0_med": 327.8,
+        "f0_std": 66.8,
+        "rms": 0.0896
+      },
+      "out_stats": [
+        {
+          "dur": 2.56,
+          "f0_med": 311.2,
+          "f0_std": 53.4,
+          "rms": 0.0719
+        },
+        {
+          "dur": 2.64,
+          "f0_med": 311.2,
+          "f0_std": 54.1,
+          "rms": 0.0716
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.249,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9791,
+      "ref_f0_ratio": 1.189,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "neutral",
+      "seed": 12,
+      "ref": "neutral_s12.wav",
+      "ref_stats": {
+        "dur": 1.94,
+        "f0_med": 249.2,
+        "f0_std": 26.6,
+        "rms": 0.1322
+      },
+      "out_stats": [
+        {
+          "dur": 3.04,
+          "f0_med": 255.7,
+          "f0_std": 59.8,
+          "rms": 0.0905
+        },
+        {
+          "dur": 2.56,
+          "f0_med": 249.9,
+          "f0_std": 48.3,
+          "rms": 0.1141
+        }
+      ],
+      "scene_stats": null,
+      "target_score": 0.573,
+      "scene_score": null,
+      "scene_scores": [],
+      "cos": 0.9823,
+      "ref_f0_ratio": 0.904,
+      "ratios": null,
+      "signature": null,
+      "verdict": "candidate",
+      "reason": null
+    },
+    {
+      "emotion": "happy",
+      "seed": 1,
+      "ref": "happy_s1.wav",
+      "ref_stats": {
+        "dur": 2.41,
+        "f0_med": 335.5,
+        "f0_std": 89.0,
+        "rms": 0.0952
+      },
+      "out_stats": [
+        {
+          "dur": 2.64,
+          "f0_med": 403.6,
+          "f0_std": 96.1,
+          "rms": 0.0686
+        },
+        {
+          "dur": 3.2,
+          "f0_med": 363.8,
+          "f0_std": 60.8,
+          "rms": 0.0706
+        }
+      ],
+      "scene_stats": {
+        "dur": 2.72,
+        "f0_med": 326.9,
+        "f0_std": 99.3,
+        "rms": 0.0649
+      },
+      "target_score": 0.986,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        0.002
+      ],
+      "cos": 0.9603,
+      "ref_f0_ratio": 1.217,
+      "ratios": {
+        "f0_med": 1.418,
+        "f0_std": 1.516,
+        "rms": 0.773
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "happy",
+      "seed": 2,
+      "ref": "happy_s2.wav",
+      "ref_stats": {
+        "dur": 2.39,
+        "f0_med": 307.7,
+        "f0_std": 79.1,
+        "rms": 0.0941
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9559,
+      "ref_f0_ratio": 1.116,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9559 < 0.96"
+    },
+    {
+      "emotion": "happy",
+      "seed": 3,
+      "ref": "happy_s3.wav",
+      "ref_stats": {
+        "dur": 2.96,
+        "f0_med": 280.5,
+        "f0_std": 56.9,
+        "rms": 0.1067
+      },
+      "out_stats": [
+        {
+          "dur": 2.08,
+          "f0_med": 365.9,
+          "f0_std": 70.2,
+          "rms": 0.1011
+        },
+        {
+          "dur": 2.72,
+          "f0_med": 311.2,
+          "f0_std": 60.2,
+          "rms": 0.097
+        }
+      ],
+      "scene_stats": {
+        "dur": 3.44,
+        "f0_med": 300.6,
+        "f0_std": 67.6,
+        "rms": 0.0789
+      },
+      "target_score": 1.0,
+      "scene_score": 0.955,
+      "scene_scores": [
+        0.955,
+        0.84,
+        0.991
+      ],
+      "cos": 0.965,
+      "ref_f0_ratio": 1.017,
+      "ratios": {
+        "f0_med": 1.251,
+        "f0_std": 1.261,
+        "rms": 1.1
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "happy",
+      "seed": 4,
+      "ref": "happy_s4.wav",
+      "ref_stats": {
+        "dur": 2.15,
+        "f0_med": 266.3,
+        "f0_std": 50.0,
+        "rms": 0.1294
+      },
+      "out_stats": [
+        {
+          "dur": 2.4,
+          "f0_med": 292.1,
+          "f0_std": 63.1,
+          "rms": 0.1105
+        },
+        {
+          "dur": 2.72,
+          "f0_med": 353.4,
+          "f0_std": 83.4,
+          "rms": 0.1213
+        }
+      ],
+      "scene_stats": {
+        "dur": 4.08,
+        "f0_med": 276.5,
+        "f0_std": 80.6,
+        "rms": 0.0834
+      },
+      "target_score": 0.496,
+      "scene_score": 0.272,
+      "scene_scores": [
+        0.0,
+        0.272,
+        0.996
+      ],
+      "cos": 0.9725,
+      "ref_f0_ratio": 0.966,
+      "ratios": {
+        "f0_med": 1.193,
+        "f0_std": 1.416,
+        "rms": 1.288
+      },
+      "signature": true,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.272 < 0.3"
+    },
+    {
+      "emotion": "happy",
+      "seed": 5,
+      "ref": "happy_s5.wav",
+      "ref_stats": {
+        "dur": 2.21,
+        "f0_med": 370.1,
+        "f0_std": 83.6,
+        "rms": 0.1095
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9489,
+      "ref_f0_ratio": 1.342,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9489 < 0.96"
+    },
+    {
+      "emotion": "happy",
+      "seed": 6,
+      "ref": "happy_s6.wav",
+      "ref_stats": {
+        "dur": 1.85,
+        "f0_med": 298.9,
+        "f0_std": 46.9,
+        "rms": 0.0974
+      },
+      "out_stats": [
+        {
+          "dur": 2.16,
+          "f0_med": 289.6,
+          "f0_std": 59.8,
+          "rms": 0.0863
+        },
+        {
+          "dur": 2.32,
+          "f0_med": 289.6,
+          "f0_std": 53.6,
+          "rms": 0.0796
+        }
+      ],
+      "scene_stats": {
+        "dur": 2.32,
+        "f0_med": 274.9,
+        "f0_std": 60.6,
+        "rms": 0.0821
+      },
+      "target_score": 0.65,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        0.589
+      ],
+      "cos": 0.9676,
+      "ref_f0_ratio": 1.084,
+      "ratios": {
+        "f0_med": 1.07,
+        "f0_std": 1.097,
+        "rms": 0.921
+      },
+      "signature": false,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "happy",
+      "seed": 7,
+      "ref": "happy_s7.wav",
+      "ref_stats": {
+        "dur": 2.35,
+        "f0_med": 373.4,
+        "f0_std": 65.0,
+        "rms": 0.1262
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9545,
+      "ref_f0_ratio": 1.354,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9545 < 0.96；参考音区 1.354 不在 0.8~1.35"
+    },
+    {
+      "emotion": "happy",
+      "seed": 8,
+      "ref": "happy_s8.wav",
+      "ref_stats": {
+        "dur": 1.99,
+        "f0_med": 298.0,
+        "f0_std": 76.1,
+        "rms": 0.0873
+      },
+      "out_stats": [
+        {
+          "dur": 2.64,
+          "f0_med": 350.4,
+          "f0_std": 76.5,
+          "rms": 0.0735
+        },
+        {
+          "dur": 2.16,
+          "f0_med": 266.3,
+          "f0_std": 78.2,
+          "rms": 0.0589
+        }
+      ],
+      "scene_stats": {
+        "dur": 2.16,
+        "f0_med": 319.4,
+        "f0_std": 72.1,
+        "rms": 0.0733
+      },
+      "target_score": 0.0,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        0.998
+      ],
+      "cos": 0.9628,
+      "ref_f0_ratio": 1.081,
+      "ratios": {
+        "f0_med": 1.14,
+        "f0_std": 1.495,
+        "rms": 0.736
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "happy",
+      "seed": 9,
+      "ref": "happy_s9.wav",
+      "ref_stats": {
+        "dur": 2.46,
+        "f0_med": 341.4,
+        "f0_std": 49.0,
+        "rms": 0.1144
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9581,
+      "ref_f0_ratio": 1.238,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9581 < 0.96"
+    },
+    {
+      "emotion": "happy",
+      "seed": 10,
+      "ref": "happy_s10.wav",
+      "ref_stats": {
+        "dur": 2.73,
+        "f0_med": 327.8,
+        "f0_std": 65.9,
+        "rms": 0.0885
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9532,
+      "ref_f0_ratio": 1.189,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9532 < 0.96"
+    },
+    {
+      "emotion": "happy",
+      "seed": 11,
+      "ref": "happy_s11.wav",
+      "ref_stats": {
+        "dur": 1.91,
+        "f0_med": 304.1,
+        "f0_std": 59.0,
+        "rms": 0.1231
+      },
+      "out_stats": [
+        {
+          "dur": 2.0,
+          "f0_med": 307.7,
+          "f0_std": 77.7,
+          "rms": 0.1063
+        },
+        {
+          "dur": 2.32,
+          "f0_med": 361.7,
+          "f0_std": 80.5,
+          "rms": 0.1058
+        }
+      ],
+      "scene_stats": {
+        "dur": 2.32,
+        "f0_med": 298.0,
+        "f0_std": 69.5,
+        "rms": 0.1053
+      },
+      "target_score": 0.862,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "cos": 0.966,
+      "ref_f0_ratio": 1.103,
+      "ratios": {
+        "f0_med": 1.237,
+        "f0_std": 1.53,
+        "rms": 1.179
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "happy",
+      "seed": 12,
+      "ref": "happy_s12.wav",
+      "ref_stats": {
+        "dur": 2.14,
+        "f0_med": 292.1,
+        "f0_std": 68.1,
+        "rms": 0.11
+      },
+      "out_stats": [
+        {
+          "dur": 2.16,
+          "f0_med": 325.0,
+          "f0_std": 83.9,
+          "rms": 0.0939
+        },
+        {
+          "dur": 2.72,
+          "f0_med": 365.9,
+          "f0_std": 73.3,
+          "rms": 0.0806
+        }
+      ],
+      "scene_stats": {
+        "dur": 2.4,
+        "f0_med": 304.1,
+        "f0_std": 70.8,
+        "rms": 0.0988
+      },
+      "target_score": 0.995,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        0.972,
+        1.0
+      ],
+      "cos": 0.9673,
+      "ref_f0_ratio": 1.059,
+      "ratios": {
+        "f0_med": 1.276,
+        "f0_std": 1.52,
+        "rms": 0.969
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "sad",
+      "seed": 1,
+      "ref": "sad_s1.wav",
+      "ref_stats": {
+        "dur": 3.83,
+        "f0_med": 241.4,
+        "f0_std": 22.8,
+        "rms": 0.1011
+      },
+      "out_stats": [
+        {
+          "dur": 2.64,
+          "f0_med": 254.3,
+          "f0_std": 77.9,
+          "rms": 0.0925
+        },
+        {
+          "dur": 3.28,
+          "f0_med": 288.7,
+          "f0_std": 38.5,
+          "rms": 0.1001
+        }
+      ],
+      "scene_stats": {
+        "dur": 4.32,
+        "f0_med": 251.4,
+        "f0_std": 34.9,
+        "rms": 0.0849
+      },
+      "target_score": 0.001,
+      "scene_score": 0.999,
+      "scene_scores": [
+        0.999,
+        0.362,
+        1.0
+      ],
+      "cos": 0.972,
+      "ref_f0_ratio": 0.876,
+      "ratios": {
+        "f0_med": 1.003,
+        "f0_std": 1.126,
+        "rms": 1.07
+      },
+      "signature": false,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "sad",
+      "seed": 2,
+      "ref": "sad_s2.wav",
+      "ref_stats": {
+        "dur": 3.44,
+        "f0_med": 245.6,
+        "f0_std": 40.7,
+        "rms": 0.1027
+      },
+      "out_stats": [
+        {
+          "dur": 2.32,
+          "f0_med": 265.5,
+          "f0_std": 40.0,
+          "rms": 0.0933
+        },
+        {
+          "dur": 2.96,
+          "f0_med": 249.9,
+          "f0_std": 38.4,
+          "rms": 0.0925
+        }
+      ],
+      "scene_stats": {
+        "dur": 5.28,
+        "f0_med": 241.4,
+        "f0_std": 44.2,
+        "rms": 0.0631
+      },
+      "target_score": 0.002,
+      "scene_score": 0.963,
+      "scene_scores": [
+        0.929,
+        0.997
+      ],
+      "cos": 0.9766,
+      "ref_f0_ratio": 0.891,
+      "ratios": {
+        "f0_med": 0.952,
+        "f0_std": 0.758,
+        "rms": 1.032
+      },
+      "signature": false,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "sad",
+      "seed": 3,
+      "ref": "sad_s3.wav",
+      "ref_stats": {
+        "dur": 3.81,
+        "f0_med": 314.9,
+        "f0_std": 42.6,
+        "rms": 0.1416
+      },
+      "out_stats": [
+        {
+          "dur": 2.56,
+          "f0_med": 322.2,
+          "f0_std": 56.4,
+          "rms": 0.1105
+        },
+        {
+          "dur": 3.28,
+          "f0_med": 305.9,
+          "f0_std": 60.0,
+          "rms": 0.0949
+        }
+      ],
+      "scene_stats": {
+        "dur": 4.16,
+        "f0_med": 333.6,
+        "f0_std": 69.6,
+        "rms": 0.1072
+      },
+      "target_score": 0.0,
+      "scene_score": 0.0,
+      "scene_scores": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cos": 0.9619,
+      "ref_f0_ratio": 1.142,
+      "ratios": {
+        "f0_med": 1.16,
+        "f0_std": 1.126,
+        "rms": 1.141
+      },
+      "signature": false,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.0 < 0.3"
+    },
+    {
+      "emotion": "sad",
+      "seed": 4,
+      "ref": "sad_s4.wav",
+      "ref_stats": {
+        "dur": 4.05,
+        "f0_med": 269.4,
+        "f0_std": 28.8,
+        "rms": 0.0702
+      },
+      "out_stats": [
+        {
+          "dur": 2.48,
+          "f0_med": 275.7,
+          "f0_std": 40.1,
+          "rms": 0.0798
+        },
+        {
+          "dur": 3.28,
+          "f0_med": 313.0,
+          "f0_std": 51.0,
+          "rms": 0.0665
+        }
+      ],
+      "scene_stats": {
+        "dur": 4.4,
+        "f0_med": 302.4,
+        "f0_std": 54.0,
+        "rms": 0.0507
+      },
+      "target_score": 0.002,
+      "scene_score": 0.0,
+      "scene_scores": [
+        0.0,
+        0.0,
+        0.002
+      ],
+      "cos": 0.967,
+      "ref_f0_ratio": 0.977,
+      "ratios": {
+        "f0_med": 1.088,
+        "f0_std": 0.88,
+        "rms": 0.812
+      },
+      "signature": false,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.0 < 0.3"
+    },
+    {
+      "emotion": "sad",
+      "seed": 5,
+      "ref": "sad_s5.wav",
+      "ref_stats": {
+        "dur": 3.78,
+        "f0_med": 229.2,
+        "f0_std": 45.2,
+        "rms": 0.1129
+      },
+      "out_stats": [
+        {
+          "dur": 2.24,
+          "f0_med": 254.3,
+          "f0_std": 42.2,
+          "rms": 0.1044
+        },
+        {
+          "dur": 3.04,
+          "f0_med": 269.4,
+          "f0_std": 61.9,
+          "rms": 0.1134
+        }
+      ],
+      "scene_stats": {
+        "dur": 3.52,
+        "f0_med": 248.5,
+        "f0_std": 44.8,
+        "rms": 0.1029
+      },
+      "target_score": 0.017,
+      "scene_score": 0.985,
+      "scene_scores": [
+        0.072,
+        0.998,
+        0.985
+      ],
+      "cos": 0.9754,
+      "ref_f0_ratio": 0.831,
+      "ratios": {
+        "f0_med": 0.968,
+        "f0_std": 1.006,
+        "rms": 1.21
+      },
+      "signature": false,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "sad",
+      "seed": 6,
+      "ref": "sad_s6.wav",
+      "ref_stats": {
+        "dur": 3.79,
+        "f0_med": 208.9,
+        "f0_std": 31.6,
+        "rms": 0.1365
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9632,
+      "ref_f0_ratio": 0.758,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：参考音区 0.758 不在 0.8~1.35"
+    },
+    {
+      "emotion": "sad",
+      "seed": 7,
+      "ref": "sad_s7.wav",
+      "ref_stats": {
+        "dur": 3.46,
+        "f0_med": 247.0,
+        "f0_std": 20.5,
+        "rms": 0.0603
+      },
+      "out_stats": [
+        {
+          "dur": 3.12,
+          "f0_med": 271.0,
+          "f0_std": 38.6,
+          "rms": 0.0612
+        },
+        {
+          "dur": 2.8,
+          "f0_med": 277.3,
+          "f0_std": 33.5,
+          "rms": 0.0581
+        }
+      ],
+      "scene_stats": {
+        "dur": 3.92,
+        "f0_med": 255.7,
+        "f0_std": 25.9,
+        "rms": 0.0418
+      },
+      "target_score": 0.0,
+      "scene_score": 0.979,
+      "scene_scores": [
+        1.0,
+        0.979,
+        0.364
+      ],
+      "cos": 0.9693,
+      "ref_f0_ratio": 0.896,
+      "ratios": {
+        "f0_med": 1.013,
+        "f0_std": 0.696,
+        "rms": 0.662
+      },
+      "signature": false,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "sad",
+      "seed": 8,
+      "ref": "sad_s8.wav",
+      "ref_stats": {
+        "dur": 3.71,
+        "f0_med": 251.4,
+        "f0_std": 32.7,
+        "rms": 0.121
+      },
+      "out_stats": [
+        {
+          "dur": 2.4,
+          "f0_med": 274.1,
+          "f0_std": 53.2,
+          "rms": 0.1278
+        },
+        {
+          "dur": 2.72,
+          "f0_med": 233.2,
+          "f0_std": 44.5,
+          "rms": 0.1172
+        }
+      ],
+      "scene_stats": {
+        "dur": 4.0,
+        "f0_med": 226.5,
+        "f0_std": 32.8,
+        "rms": 0.0831
+      },
+      "target_score": 0.0,
+      "scene_score": 0.32,
+      "scene_scores": [
+        0.083,
+        0.32,
+        0.999
+      ],
+      "cos": 0.975,
+      "ref_f0_ratio": 0.912,
+      "ratios": {
+        "f0_med": 0.938,
+        "f0_std": 0.946,
+        "rms": 1.361
+      },
+      "signature": false,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.32 < 0.45，韵律未达签名（{'f0_med': 0.938, 'f0_std': 0.946, 'rms': 1.361}）"
+    },
+    {
+      "emotion": "sad",
+      "seed": 9,
+      "ref": "sad_s9.wav",
+      "ref_stats": {
+        "dur": 3.76,
+        "f0_med": 242.8,
+        "f0_std": 34.0,
+        "rms": 0.0703
+      },
+      "out_stats": [
+        {
+          "dur": 2.48,
+          "f0_med": 245.6,
+          "f0_std": 59.6,
+          "rms": 0.0661
+        },
+        {
+          "dur": 3.12,
+          "f0_med": 288.7,
+          "f0_std": 60.7,
+          "rms": 0.0659
+        }
+      ],
+      "scene_stats": {
+        "dur": 4.64,
+        "f0_med": 241.4,
+        "f0_std": 33.2,
+        "rms": 0.059
+      },
+      "target_score": 0.009,
+      "scene_score": 0.996,
+      "scene_scores": [
+        1.0,
+        0.419,
+        0.996
+      ],
+      "cos": 0.9719,
+      "ref_f0_ratio": 0.881,
+      "ratios": {
+        "f0_med": 0.987,
+        "f0_std": 1.164,
+        "rms": 0.733
+      },
+      "signature": false,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "sad",
+      "seed": 10,
+      "ref": "sad_s10.wav",
+      "ref_stats": {
+        "dur": 3.73,
+        "f0_med": 263.2,
+        "f0_std": 25.6,
+        "rms": 0.1346
+      },
+      "out_stats": [
+        {
+          "dur": 2.32,
+          "f0_med": 283.8,
+          "f0_std": 41.7,
+          "rms": 0.1168
+        },
+        {
+          "dur": 3.2,
+          "f0_med": 307.7,
+          "f0_std": 53.8,
+          "rms": 0.1241
+        }
+      ],
+      "scene_stats": {
+        "dur": 6.0,
+        "f0_med": 254.3,
+        "f0_std": 44.7,
+        "rms": 0.0741
+      },
+      "target_score": 0.004,
+      "scene_score": 0.175,
+      "scene_scores": [
+        0.175,
+        0.019,
+        0.643
+      ],
+      "cos": 0.9726,
+      "ref_f0_ratio": 0.955,
+      "ratios": {
+        "f0_med": 1.093,
+        "f0_std": 0.925,
+        "rms": 1.339
+      },
+      "signature": false,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.175 < 0.3"
+    },
+    {
+      "emotion": "sad",
+      "seed": 11,
+      "ref": "sad_s11.wav",
+      "ref_stats": {
+        "dur": 3.35,
+        "f0_med": 254.3,
+        "f0_std": 26.1,
+        "rms": 0.104
+      },
+      "out_stats": [
+        {
+          "dur": 2.32,
+          "f0_med": 313.0,
+          "f0_std": 50.9,
+          "rms": 0.1017
+        },
+        {
+          "dur": 2.64,
+          "f0_med": 295.5,
+          "f0_std": 53.1,
+          "rms": 0.084
+        }
+      ],
+      "scene_stats": {
+        "dur": 4.24,
+        "f0_med": 251.4,
+        "f0_std": 44.3,
+        "rms": 0.063
+      },
+      "target_score": 0.001,
+      "scene_score": 0.839,
+      "scene_scores": [
+        0.966,
+        0.649,
+        0.839
+      ],
+      "cos": 0.974,
+      "ref_f0_ratio": 0.922,
+      "ratios": {
+        "f0_med": 1.124,
+        "f0_std": 1.006,
+        "rms": 1.032
+      },
+      "signature": false,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "sad",
+      "seed": 12,
+      "ref": "sad_s12.wav",
+      "ref_stats": {
+        "dur": 3.97,
+        "f0_med": 275.7,
+        "f0_std": 36.9,
+        "rms": 0.0935
+      },
+      "out_stats": [
+        {
+          "dur": 2.16,
+          "f0_med": 306.8,
+          "f0_std": 51.0,
+          "rms": 0.1023
+        },
+        {
+          "dur": 2.96,
+          "f0_med": 311.2,
+          "f0_std": 53.7,
+          "rms": 0.076
+        }
+      ],
+      "scene_stats": {
+        "dur": 5.12,
+        "f0_med": 283.8,
+        "f0_std": 47.3,
+        "rms": 0.0561
+      },
+      "target_score": 0.0,
+      "scene_score": 0.0,
+      "scene_scores": [
+        0.0,
+        0.003,
+        0.0
+      ],
+      "cos": 0.963,
+      "ref_f0_ratio": 1.0,
+      "ratios": {
+        "f0_med": 1.142,
+        "f0_std": 1.014,
+        "rms": 0.991
+      },
+      "signature": false,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.0 < 0.3"
+    },
+    {
+      "emotion": "angry",
+      "seed": 1,
+      "ref": "angry_s1.wav",
+      "ref_stats": {
+        "dur": 1.31,
+        "f0_med": 333.6,
+        "f0_std": 79.2,
+        "rms": 0.127
+      },
+      "out_stats": [
+        {
+          "dur": 2.56,
+          "f0_med": 283.8,
+          "f0_std": 75.0,
+          "rms": 0.095
+        },
+        {
+          "dur": 2.48,
+          "f0_med": 339.4,
+          "f0_std": 70.8,
+          "rms": 0.111
+        }
+      ],
+      "scene_stats": {
+        "dur": 1.36,
+        "f0_med": 300.6,
+        "f0_std": 96.4,
+        "rms": 0.1056
+      },
+      "target_score": 0.549,
+      "scene_score": 0.003,
+      "scene_scores": [
+        0.0,
+        0.003,
+        0.038
+      ],
+      "cos": 0.9685,
+      "ref_f0_ratio": 1.21,
+      "ratios": {
+        "f0_med": 1.152,
+        "f0_std": 1.41,
+        "rms": 1.144
+      },
+      "signature": true,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.003 < 0.3"
+    },
+    {
+      "emotion": "angry",
+      "seed": 2,
+      "ref": "angry_s2.wav",
+      "ref_stats": {
+        "dur": 1.26,
+        "f0_med": 361.0,
+        "f0_std": 99.3,
+        "rms": 0.1409
+      },
+      "out_stats": [
+        {
+          "dur": 2.48,
+          "f0_med": 465.0,
+          "f0_std": 97.5,
+          "rms": 0.1214
+        },
+        {
+          "dur": 3.28,
+          "f0_med": 297.2,
+          "f0_std": 98.2,
+          "rms": 0.0942
+        }
+      ],
+      "scene_stats": {
+        "dur": 1.68,
+        "f0_med": 302.4,
+        "f0_std": 100.2,
+        "rms": 0.1291
+      },
+      "target_score": 0.0,
+      "scene_score": 0.996,
+      "scene_scores": [
+        0.0,
+        0.996,
+        0.998
+      ],
+      "cos": 0.9642,
+      "ref_f0_ratio": 1.309,
+      "ratios": {
+        "f0_med": 1.408,
+        "f0_std": 1.892,
+        "rms": 1.198
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "angry",
+      "seed": 3,
+      "ref": "angry_s3.wav",
+      "ref_stats": {
+        "dur": 1.51,
+        "f0_med": 271.0,
+        "f0_std": 88.8,
+        "rms": 0.1451
+      },
+      "out_stats": [
+        {
+          "dur": 2.24,
+          "f0_med": 278.9,
+          "f0_std": 57.8,
+          "rms": 0.1151
+        },
+        {
+          "dur": 2.88,
+          "f0_med": 247.0,
+          "f0_std": 69.6,
+          "rms": 0.1276
+        }
+      ],
+      "scene_stats": {
+        "dur": 1.6,
+        "f0_med": 278.1,
+        "f0_std": 106.5,
+        "rms": 0.1224
+      },
+      "target_score": 0.0,
+      "scene_score": 0.0,
+      "scene_scores": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cos": 0.9645,
+      "ref_f0_ratio": 0.983,
+      "ratios": {
+        "f0_med": 0.972,
+        "f0_std": 1.232,
+        "rms": 1.348
+      },
+      "signature": false,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.0 < 0.3"
+    },
+    {
+      "emotion": "angry",
+      "seed": 4,
+      "ref": "angry_s4.wav",
+      "ref_stats": {
+        "dur": 1.12,
+        "f0_med": 385.4,
+        "f0_std": 82.7,
+        "rms": 0.1379
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9604,
+      "ref_f0_ratio": 1.398,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：参考音区 1.398 不在 0.8~1.35"
+    },
+    {
+      "emotion": "angry",
+      "seed": 5,
+      "ref": "angry_s5.wav",
+      "ref_stats": {
+        "dur": 1.44,
+        "f0_med": 415.5,
+        "f0_std": 79.2,
+        "rms": 0.1183
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.957,
+      "ref_f0_ratio": 1.507,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9570 < 0.96；参考音区 1.507 不在 0.8~1.35"
+    },
+    {
+      "emotion": "angry",
+      "seed": 6,
+      "ref": "angry_s6.wav",
+      "ref_stats": {
+        "dur": 1.15,
+        "f0_med": 438.9,
+        "f0_std": 89.7,
+        "rms": 0.1246
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9572,
+      "ref_f0_ratio": 1.592,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9572 < 0.96；参考音区 1.592 不在 0.8~1.35"
+    },
+    {
+      "emotion": "angry",
+      "seed": 7,
+      "ref": "angry_s7.wav",
+      "ref_stats": {
+        "dur": 1.42,
+        "f0_med": 320.4,
+        "f0_std": 104.5,
+        "rms": 0.0973
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9591,
+      "ref_f0_ratio": 1.162,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9591 < 0.96"
+    },
+    {
+      "emotion": "angry",
+      "seed": 8,
+      "ref": "angry_s8.wav",
+      "ref_stats": {
+        "dur": 1.24,
+        "f0_med": 399.0,
+        "f0_std": 117.1,
+        "rms": 0.1094
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9586,
+      "ref_f0_ratio": 1.447,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9586 < 0.96；参考音区 1.447 不在 0.8~1.35"
+    },
+    {
+      "emotion": "angry",
+      "seed": 9,
+      "ref": "angry_s9.wav",
+      "ref_stats": {
+        "dur": 1.36,
+        "f0_med": 383.2,
+        "f0_std": 111.0,
+        "rms": 0.1192
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.965,
+      "ref_f0_ratio": 1.39,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：参考音区 1.39 不在 0.8~1.35"
+    },
+    {
+      "emotion": "angry",
+      "seed": 10,
+      "ref": "angry_s10.wav",
+      "ref_stats": {
+        "dur": 1.24,
+        "f0_med": 382.1,
+        "f0_std": 102.2,
+        "rms": 0.0978
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9566,
+      "ref_f0_ratio": 1.386,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9566 < 0.96；参考音区 1.386 不在 0.8~1.35"
+    },
+    {
+      "emotion": "angry",
+      "seed": 11,
+      "ref": "angry_s11.wav",
+      "ref_stats": {
+        "dur": 1.54,
+        "f0_med": 344.3,
+        "f0_std": 143.0,
+        "rms": 0.0842
+      },
+      "out_stats": [
+        {
+          "dur": 2.48,
+          "f0_med": 298.9,
+          "f0_std": 86.3,
+          "rms": 0.0593
+        },
+        {
+          "dur": 2.72,
+          "f0_med": 341.4,
+          "f0_std": 87.7,
+          "rms": 0.0602
+        }
+      ],
+      "scene_stats": {
+        "dur": 1.84,
+        "f0_med": 336.5,
+        "f0_std": 82.8,
+        "rms": 0.0667
+      },
+      "target_score": 0.454,
+      "scene_score": 0.0,
+      "scene_scores": [
+        0.0,
+        0.001,
+        0.0
+      ],
+      "cos": 0.9612,
+      "ref_f0_ratio": 1.249,
+      "ratios": {
+        "f0_med": 1.183,
+        "f0_std": 1.683,
+        "rms": 0.663
+      },
+      "signature": false,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.0 < 0.3"
+    },
+    {
+      "emotion": "angry",
+      "seed": 12,
+      "ref": "angry_s12.wav",
+      "ref_stats": {
+        "dur": 1.47,
+        "f0_med": 311.2,
+        "f0_std": 121.3,
+        "rms": 0.1022
+      },
+      "out_stats": [
+        {
+          "dur": 2.32,
+          "f0_med": 399.0,
+          "f0_std": 85.2,
+          "rms": 0.1217
+        },
+        {
+          "dur": 2.64,
+          "f0_med": 333.6,
+          "f0_std": 84.9,
+          "rms": 0.0826
+        }
+      ],
+      "scene_stats": {
+        "dur": 1.92,
+        "f0_med": 357.5,
+        "f0_std": 100.9,
+        "rms": 0.0734
+      },
+      "target_score": 0.09,
+      "scene_score": 0.086,
+      "scene_scores": [
+        0.993,
+        0.0,
+        0.086
+      ],
+      "cos": 0.9621,
+      "ref_f0_ratio": 1.129,
+      "ratios": {
+        "f0_med": 1.354,
+        "f0_std": 1.646,
+        "rms": 1.136
+      },
+      "signature": true,
+      "verdict": "rejected",
+      "reason": "场景句目标分 0.086 < 0.3"
+    },
+    {
+      "emotion": "surprise",
+      "seed": 1,
+      "ref": "surprise_s1.wav",
+      "ref_stats": {
+        "dur": 2.23,
+        "f0_med": 455.7,
+        "f0_std": 71.3,
+        "rms": 0.0938
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.946,
+      "ref_f0_ratio": 1.653,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9460 < 0.96；参考音区 1.653 不在 0.8~1.35"
+    },
+    {
+      "emotion": "surprise",
+      "seed": 2,
+      "ref": "surprise_s2.wav",
+      "ref_stats": {
+        "dur": 1.99,
+        "f0_med": 331.7,
+        "f0_std": 91.9,
+        "rms": 0.109
+      },
+      "out_stats": [
+        {
+          "dur": 2.32,
+          "f0_med": 337.5,
+          "f0_std": 86.6,
+          "rms": 0.0958
+        },
+        {
+          "dur": 2.48,
+          "f0_med": 311.2,
+          "f0_std": 60.6,
+          "rms": 0.0889
+        }
+      ],
+      "scene_stats": {
+        "dur": 3.04,
+        "f0_med": 323.2,
+        "f0_std": 125.8,
+        "rms": 0.0731
+      },
+      "target_score": 0.611,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "cos": 0.974,
+      "ref_f0_ratio": 1.203,
+      "ratios": {
+        "f0_med": 1.199,
+        "f0_std": 1.424,
+        "rms": 1.027
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "surprise",
+      "seed": 3,
+      "ref": "surprise_s3.wav",
+      "ref_stats": {
+        "dur": 1.96,
+        "f0_med": 387.6,
+        "f0_std": 96.5,
+        "rms": 0.1217
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9704,
+      "ref_f0_ratio": 1.406,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：参考音区 1.406 不在 0.8~1.35"
+    },
+    {
+      "emotion": "surprise",
+      "seed": 4,
+      "ref": "surprise_s4.wav",
+      "ref_stats": {
+        "dur": 2.11,
+        "f0_med": 363.8,
+        "f0_std": 101.5,
+        "rms": 0.1123
+      },
+      "out_stats": [
+        {
+          "dur": 2.32,
+          "f0_med": 275.7,
+          "f0_std": 67.7,
+          "rms": 0.1039
+        },
+        {
+          "dur": 3.12,
+          "f0_med": 290.4,
+          "f0_std": 62.0,
+          "rms": 0.0961
+        }
+      ],
+      "scene_stats": {
+        "dur": 3.12,
+        "f0_med": 264.8,
+        "f0_std": 98.9,
+        "rms": 0.0833
+      },
+      "target_score": 0.492,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "cos": 0.9741,
+      "ref_f0_ratio": 1.32,
+      "ratios": {
+        "f0_med": 1.046,
+        "f0_std": 1.253,
+        "rms": 1.111
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "surprise",
+      "seed": 5,
+      "ref": "surprise_s5.wav",
+      "ref_stats": {
+        "dur": 1.87,
+        "f0_med": 363.8,
+        "f0_std": 124.7,
+        "rms": 0.1168
+      },
+      "out_stats": [
+        {
+          "dur": 2.24,
+          "f0_med": 394.4,
+          "f0_std": 82.1,
+          "rms": 0.1014
+        },
+        {
+          "dur": 2.48,
+          "f0_med": 304.1,
+          "f0_std": 68.0,
+          "rms": 0.1033
+        }
+      ],
+      "scene_stats": {
+        "dur": 2.32,
+        "f0_med": 230.5,
+        "f0_std": 146.3,
+        "rms": 0.097
+      },
+      "target_score": 0.542,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "cos": 0.9722,
+      "ref_f0_ratio": 1.32,
+      "ratios": {
+        "f0_med": 1.29,
+        "f0_std": 1.451,
+        "rms": 1.137
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "surprise",
+      "seed": 6,
+      "ref": "surprise_s6.wav",
+      "ref_stats": {
+        "dur": 1.77,
+        "f0_med": 291.2,
+        "f0_std": 70.9,
+        "rms": 0.0849
+      },
+      "out_stats": [
+        {
+          "dur": 2.08,
+          "f0_med": 231.8,
+          "f0_std": 50.9,
+          "rms": 0.0747
+        },
+        {
+          "dur": 2.72,
+          "f0_med": 245.6,
+          "f0_std": 42.5,
+          "rms": 0.0671
+        }
+      ],
+      "scene_stats": {
+        "dur": 3.36,
+        "f0_med": 309.5,
+        "f0_std": 107.6,
+        "rms": 0.0741
+      },
+      "target_score": 0.01,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        0.834
+      ],
+      "cos": 0.973,
+      "ref_f0_ratio": 1.056,
+      "ratios": {
+        "f0_med": 0.882,
+        "f0_std": 0.903,
+        "rms": 0.788
+      },
+      "signature": false,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "surprise",
+      "seed": 7,
+      "ref": "surprise_s7.wav",
+      "ref_stats": {
+        "dur": 1.85,
+        "f0_med": 282.1,
+        "f0_std": 99.5,
+        "rms": 0.1155
+      },
+      "out_stats": [
+        {
+          "dur": 2.16,
+          "f0_med": 249.2,
+          "f0_std": 62.0,
+          "rms": 0.0922
+        },
+        {
+          "dur": 2.48,
+          "f0_med": 372.3,
+          "f0_std": 87.5,
+          "rms": 0.1069
+        }
+      ],
+      "scene_stats": {
+        "dur": 2.16,
+        "f0_med": 292.1,
+        "f0_std": 100.1,
+        "rms": 0.1076
+      },
+      "target_score": 0.426,
+      "scene_score": 0.934,
+      "scene_scores": [
+        0.934,
+        1.0,
+        0.048
+      ],
+      "cos": 0.9717,
+      "ref_f0_ratio": 1.023,
+      "ratios": {
+        "f0_med": 1.149,
+        "f0_std": 1.447,
+        "rms": 1.106
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "surprise",
+      "seed": 8,
+      "ref": "surprise_s8.wav",
+      "ref_stats": {
+        "dur": 2.29,
+        "f0_med": 430.1,
+        "f0_std": 71.8,
+        "rms": 0.0881
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.957,
+      "ref_f0_ratio": 1.56,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9570 < 0.96；参考音区 1.56 不在 0.8~1.35"
+    },
+    {
+      "emotion": "surprise",
+      "seed": 9,
+      "ref": "surprise_s9.wav",
+      "ref_stats": {
+        "dur": 2.37,
+        "f0_med": 352.4,
+        "f0_std": 69.6,
+        "rms": 0.1006
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.9419,
+      "ref_f0_ratio": 1.278,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9419 < 0.96"
+    },
+    {
+      "emotion": "surprise",
+      "seed": 10,
+      "ref": "surprise_s10.wav",
+      "ref_stats": {
+        "dur": 2.41,
+        "f0_med": 344.4,
+        "f0_std": 97.8,
+        "rms": 0.1182
+      },
+      "out_stats": [
+        {
+          "dur": 2.24,
+          "f0_med": 299.8,
+          "f0_std": 69.1,
+          "rms": 0.1122
+        },
+        {
+          "dur": 2.56,
+          "f0_med": 355.5,
+          "f0_std": 79.9,
+          "rms": 0.1153
+        }
+      ],
+      "scene_stats": {
+        "dur": 2.32,
+        "f0_med": 375.5,
+        "f0_std": 102.8,
+        "rms": 0.1161
+      },
+      "target_score": 0.268,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        0.999,
+        1.0
+      ],
+      "cos": 0.9708,
+      "ref_f0_ratio": 1.249,
+      "ratios": {
+        "f0_med": 1.211,
+        "f0_std": 1.441,
+        "rms": 1.263
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    },
+    {
+      "emotion": "surprise",
+      "seed": 11,
+      "ref": "surprise_s11.wav",
+      "ref_stats": {
+        "dur": 2.39,
+        "f0_med": 427.6,
+        "f0_std": 103.4,
+        "rms": 0.1222
+      },
+      "out_stats": null,
+      "scene_stats": null,
+      "target_score": null,
+      "scene_score": null,
+      "scene_scores": null,
+      "cos": 0.957,
+      "ref_f0_ratio": 1.551,
+      "ratios": null,
+      "signature": null,
+      "verdict": "rejected",
+      "reason": "身份预筛：身份余弦 0.9570 < 0.96；参考音区 1.551 不在 0.8~1.35"
+    },
+    {
+      "emotion": "surprise",
+      "seed": 12,
+      "ref": "surprise_s12.wav",
+      "ref_stats": {
+        "dur": 1.97,
+        "f0_med": 332.7,
+        "f0_std": 101.7,
+        "rms": 0.0882
+      },
+      "out_stats": [
+        {
+          "dur": 2.56,
+          "f0_med": 349.4,
+          "f0_std": 77.6,
+          "rms": 0.0767
+        },
+        {
+          "dur": 3.04,
+          "f0_med": 331.7,
+          "f0_std": 71.2,
+          "rms": 0.066
+        }
+      ],
+      "scene_stats": {
+        "dur": 3.76,
+        "f0_med": 323.2,
+        "f0_std": 116.9,
+        "rms": 0.0614
+      },
+      "target_score": 0.5,
+      "scene_score": 1.0,
+      "scene_scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "cos": 0.9699,
+      "ref_f0_ratio": 1.207,
+      "ratios": {
+        "f0_med": 1.258,
+        "f0_std": 1.439,
+        "rms": 0.792
+      },
+      "signature": true,
+      "verdict": "score",
+      "reason": null
+    }
+  ]
+}

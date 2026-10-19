@@ -1,11 +1,14 @@
-"""规则词表兜底层（SPEC 未决 #10 定稿实现，PoC 9/10 零误伤），v2_poc/run_rule_test.py 移植。
+"""规则兜底层（确定性替换，全部可审计）。
 
-三层结构（确定性替换，全部可审计）：
-1. 别名层——转写中的英文碎片精确替换（key in → 刻印）
-2. ITN 层——英文数词 → 阿拉伯数字（forty → 40）
-3. 拼音层——词表项与转写 n-gram 做音节级序列相似度匹配（阈值 0.8），替换最近邻
+层级：
+1. 别名层——转写中的英文碎片精确替换（仅通用词条）
+2. ITN 层——英文数词 → 阿拉伯数字
+3. 拼音层——词表项与转写 n-gram 做音节级序列相似度匹配（阈值 0.8），
+   **仅在调用方显式传入词表时启用**（场景词表，默认空）
 
-生产化待办：停用词表换 jieba 分词、词表管理改会话级配置。
+2026-10-19 评测卫生决策：内置场景词表与场景别名已移除——它们源自训练
+测试集的同一批词，属于"提前给答案"。词表改为会话级配置（生产化待办），
+由使用方按自己的场景显式传入。
 """
 
 import difflib
@@ -13,8 +16,8 @@ import re
 
 from pypinyin import lazy_pinyin, Style
 
-# 别名表：转写中的英文碎片 -> 中文（替换目标可与词表项不同粒度，如 check->查）
-ALIAS = {"key in": "刻印", "keyin": "刻印", "eden": "伊甸", "boss": "老板", "check": "查"}
+# 别名表：通用英文碎片 -> 中文
+ALIAS = {"boss": "老板", "check": "查"}
 
 # 停用表：拼音层跳过的常见真词（防"有点"→"伊甸"这类 0.80 撞线误伤）
 STOPWORDS = {"有点", "没有", "一点", "有些"}
@@ -24,11 +27,6 @@ NUM_WORDS = {"twenty": 20, "thirty": 30, "forty": 40, "fifty": 50, "sixty": 60,
 
 PINYIN_TH = 0.8
 CJK = re.compile(r"[\u4e00-\u9fff]+")
-
-# 场景专有名词（喂给润色层的词汇表与拼音层共用一份数据）
-GLOSSARY_TERMS = ["刻印", "伊甸", "蕈猪", "宫殿", "招新纳贤", "凡庸",
-                  "树莓薄荷饮", "果然要"]
-GLOSSARY_TEXT = "蕈猪、招新纳贤、凡庸、宫殿、刻印、伊甸、树莓薄荷饮、果然要、老板、40种"
 
 
 def py(text):
@@ -46,8 +44,11 @@ def cjk_ngrams(text, n):
 
 
 def correct(text, glossary=None, aliases=None, stopwords=None):
-    """返回 (fixed_text, edits)；edits 每项为 (原文片段, 替换为, 命中层)。"""
-    glossary = GLOSSARY_TERMS if glossary is None else glossary
+    """返回 (fixed_text, edits)；edits 每项为 (原文片段, 替换为, 命中层)。
+
+    glossary：场景词表（可选，默认空=拼音层不启用）。
+    """
+    glossary = glossary or []
     aliases = ALIAS if aliases is None else aliases
     stopwords = STOPWORDS if stopwords is None else stopwords
     edits = []

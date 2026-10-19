@@ -11,7 +11,12 @@ __pycache__/
 # 录音切片+转写=表演者劳动成果；合并模型/LoRA/GGUF=衍生品。全部永不发布。
 # CV 源录音在仓库根目录，由下面这组媒体规则兜底；
 # 不在本文件写具体源文件名——ignore 文件是公开的。
-voices/
+voices/*
+# 例外：合规轨情绪库是 VoiceDesign 合成产物（Apache-2.0 音源，不含任何真人隐私），
+# 需要随仓库分发才能复现同一角色。候选/复验中间产物仍不入仓。
+!voices/emotion_bank/
+voices/emotion_bank/candidates/
+voices/emotion_bank/screened/
 /*.mp4
 /*.wav
 /*.flac
